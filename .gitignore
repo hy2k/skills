@@ -1,0 +1,14 @@
+# APM build output
+build/
+
+# Scratch and throwaway artefacts
+.tmp/
+
+# Package manager state
+node_modules/
+apm_modules/
+
+# Compiled per-target output, when generated for local inspection
+.agents/skills/
+.claude/skills/
+apm.lock.yaml

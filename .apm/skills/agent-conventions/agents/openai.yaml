@@ -1,0 +1,5 @@
+interface:
+  display_name: "Agent Conventions"
+  short_description: "Pin a repo's agent conventions"
+policy:
+  allow_implicit_invocation: false

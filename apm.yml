@@ -1,0 +1,19 @@
+name: hy2k-skills
+version: 0.1.0
+description: Engineering workflow skills for AI agents — grill, spec, ticket,
+  implement, review — with stated artifact paths and a per-repo conventions
+  setup. Derivative of mattpocock/skills.
+author: Yusuke Higuchi
+license: MIT
+# Skills only: every primitive under .apm/skills/ deploys to .agents/skills/,
+# the cross-harness directory. Consumers override with --target.
+targets:
+  - agent-skills
+type: skill
+dependencies:
+  apm: []
+  mcp: []
+includes: auto
+devDependencies:
+  apm: []
+scripts: {}
