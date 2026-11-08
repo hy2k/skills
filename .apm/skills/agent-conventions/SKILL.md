@@ -78,12 +78,20 @@ The defaults are the five canonical roles, each label string equal to its name: 
 
 Offer **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSSARY.md` files) only when exploration found monorepo signals. Then confirm which layout they want.
 
+**Section E: Question channel.**
+
+> Explainer: the skills that interview — `grilling` above all — need to know which structured question tool this repo's harness exposes, because every harness names the fields differently. Prose rounds cost a round trip and lose the selection; a round in the wrong shape fails outright, since these schemas are closed.
+
+Default posture: write the row for the harness **this session** is running, which you can read off your own tool list — `ask`, `question`, `ask_user_question`, `AskUserQuestion`, or none. Add a row for each further harness the repo is driven by, if the user names one. Do not ask which harness it is when your own tool list already answers it.
+
+Write it to `docs/agents/asking.md` using [asking.md](./asking.md) as the seed.
+
 ### 3. Confirm and edit
 
 Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
-- The contents of `docs/agents/artifact-paths.md`, `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
+- The contents of `docs/agents/artifact-paths.md`, `docs/agents/asking.md`, `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
 
 Let them edit before writing.
 
@@ -108,6 +116,10 @@ The block:
 
 [one-line summary of where research, decisions, specs, tickets, and throwaways go]. See `docs/agents/artifact-paths.md`.
 
+### Asking
+
+[one-line summary: the question tool this harness exposes and how it marks a recommendation]. See `docs/agents/asking.md`.
+
 ### Issue tracker
 
 [one-line summary of where issues are tracked]. See `docs/agents/issue-tracker.md`.
@@ -126,6 +138,7 @@ Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.
 Then write the docs files using the seed templates in this skill folder as a starting point:
 
 - [artifact-paths.md](./artifact-paths.md): the five-tier layout
+- [asking.md](./asking.md): the question channel, per harness
 - [issue-tracker-github.md](./issue-tracker-github.md): GitHub issue tracker
 - [issue-tracker-gitlab.md](./issue-tracker-gitlab.md): GitLab issue tracker
 - [issue-tracker-local.md](./issue-tracker-local.md): local-markdown issue tracker

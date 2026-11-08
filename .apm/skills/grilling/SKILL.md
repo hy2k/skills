@@ -7,6 +7,8 @@ Interview the user relentlessly until you reach a shared understanding. Map this
 
 Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled: the questions you can ask _now_ without guessing at answers you haven't heard yet. Ask the whole frontier in one round: number each question and give your recommended answer. Then wait for the user's answers before the next round.
 
+**Put the round through the harness's structured question tool whenever the session has one** — `ask`, `question`, `ask_user_question` or `AskUserQuestion` — rather than writing it as prose. One entry per question; the field names, the recommendation convention and the portable rules are in `docs/agents/asking.md` when the repo carries one, and in the tool's own description otherwise. The markdown format below is the fallback for a session with no such tool, and for the record the round leaves in a transcript.
+
 Format a round like so:
 
 ```
