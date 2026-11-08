@@ -1,6 +1,6 @@
 ---
 name: agent-conventions
-description: Use when a repo needs its agent conventions pinned down before the other engineering skills run — where research, decision records, product specs, in-flight tickets, and throwaway files belong; where issues are tracked; the triage label vocabulary; and the domain doc layout. Writes the per-repo docs the other skills read.
+description: Use when a repo needs its agent conventions pinned down before the other engineering skills run — where research, decision records, product specs, in-flight tickets, and ephemeral files belong; where issues are tracked; the triage label vocabulary; and the domain doc layout. Writes the per-repo docs the other skills read.
 disable-model-invocation: true
 ---
 
@@ -34,7 +34,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - **The rest of that file, not just the block.** Which top-level sections already state a rule this skill now owns — documentation, sandbox, quality gates, servers, skills, asking? The merge step routes them into docs; list them now, with their heading text, so step 4 can propose one migration.
 - `docs/agents/`: does this skill's prior output already exist? Read each file that does — an existing doc is edited, never replaced.
 - `docs/research/`, `docs/adr/`, `docs/specs/`, `docs/glossary.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`: which of the documented layouts is already in use?
-- `.scratch/`, `.tmp/`, `TMPDIR` in the environment: signs of an existing local-markdown tracker and a throwaway convention
+- `.scratch/`, `.tmp/`, `TMPDIR` in the environment: signs of an existing local-markdown tracker and an ephemeral-artefact convention
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether the triage section runs at all.
 - `apm.yml` and `.apm/skills/`: is the skill tree APM-managed, and does the repo own any skills? `git ls-files .agents/skills | head -1` says whether the tree is committed. A populated `.agents/skills/` with no manifest means the tree is hand-authored source, not output.
 - Task runners and their scripts: `package.json` scripts, `pyproject.toml`, `mix.exs`, `mise.toml`, a `Makefile`. These name the quality gates.
@@ -59,7 +59,7 @@ Default posture: adopt the five-tier layout below verbatim. Offer a deviation on
 | Decision record | `docs/adr/NNNN-slug.md` |
 | Shipped product spec | `docs/specs/<feature>.md` |
 | In-flight spec and tickets | `.scratch/<feature>/spec.md`, `.scratch/<feature>/issues/NN-slug.md` |
-| Throwaway artefact | `$TMPDIR`, else `<repo>/.tmp/` |
+| Ephemeral artefact | `$TMPDIR`, else `<repo>/.tmp/` |
 
 Write the agreed layout to `docs/agents/artifact-paths.md` using [artifact-paths.md](./artifact-paths.md) as the seed.
 

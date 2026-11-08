@@ -8,7 +8,7 @@ This skill takes the current conversation context and codebase understanding and
 
 The issue tracker and triage label vocabulary should have been provided to you. If not, tell the user to run the `agent-conventions` skill.
 
-File locations come from `docs/agents/artifact-paths.md` when it exists. Otherwise: research records in `docs/research/NNNN-slug.md`, shipped product specs in `docs/specs/<feature>.md`, in-flight specs and tickets under `.scratch/<feature>/`, and throwaway artefacts in `$TMPDIR` (`.tmp/` in the checkout) — never committed.
+File locations come from `docs/agents/artifact-paths.md` when it exists. Otherwise: research records in `docs/research/NNNN-slug.md`, shipped product specs in `docs/specs/<feature>.md`, in-flight specs and tickets under `.scratch/<feature>/`, and  ephemeral artefacts in `$TMPDIR` (`.tmp/` in the checkout) — never committed.
 
 ## Process
 
