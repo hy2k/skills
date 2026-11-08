@@ -31,7 +31,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 
 - `git remote -v` and `.git/config`: is this a GitHub repo? Which one?
 - `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either? Which subsections does it carry, and what are they called?
-- **The rest of that file, not just the block.** Which top-level sections already state a rule this skill now owns — documentation, sandbox, quality gates, servers, skills, asking? The merge step routes them into docs; list them now, with their heading text, so step 4 can propose one migration.
+- **The rest of that file, not just the block.** Which top-level sections already state a rule this skill now owns — documentation, quality gates, servers, skills, asking, or a temp-file rule buried under another heading? The merge step routes them into docs; list them now, with their heading text, so step 4 can propose one migration.
 - `docs/agents/`: does this skill's prior output already exist? Read each file that does — an existing doc is edited, never replaced.
 - `docs/research/`, `docs/adr/`, `docs/specs/`, `docs/glossary.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`: which of the documented layouts is already in use?
 - `.scratch/`, `.tmp/`, `TMPDIR` in the environment: signs of an existing local-markdown tracker and an ephemeral-artefact convention
@@ -146,19 +146,21 @@ Never create `AGENTS.md` when `CLAUDE.md` already exists (or vice versa); always
 **Two surfaces carry the same rules, and both have to be checked.**
 
 1. The `## Agent skills` block, when the file has one.
-2. Top-level sections elsewhere in the same file. Every subject this skill owns usually appears somewhere already — under headings like `## Documentation`, `## Sandbox`, `## Quality gates`, `## Long-running processes`, `## Verification`, `## Agent skills`, `## Asking the owner`.
+2. Top-level sections elsewhere in the same file. Every subject this skill owns usually appears somewhere already — under headings like `## Documentation`, `## Quality gates`, `## Long-running processes`, `## Verification`, `## Agent skills`, `## Asking the owner`. A rule also hides under a heading that is not its own, so read for the rule, not for the heading.
 
 Match by **subject**, never by heading text. Then route what you find:
 
 | An existing section is likely to hold | The doc that now owns it |
 | --- | --- |
 | Documentation, Docs, Writing specs | `domain.md` |
-| Sandbox, Temporary files, Scratch | `artifact-paths.md` |
+| Temporary files, Temp, Scratch | `artifact-paths.md` — the temp-path rule only |
 | Quality gates, Verification, Checks | `quality-gates.md` |
 | Long-running processes, Dev server, Servers | `long-running-processes.md` |
 | Agent skills, Skills, APM | `skills-layout.md` |
 | Asking, Interview questions, Grilling questions | `asking.md` |
 | Issue tracker, Tickets, Triage | `issue-tracker.md`, `triage-labels.md` |
+
+**A mixed section contributes only the part this package owns.** `## Sandbox` is the usual case: it holds harness policy — how the sandbox is enforced, the profile file, network and port grants, each with its reason — next to one rule about where temporary files go. Move that rule into `artifact-paths.md` and leave the policy where it is. Sandbox policy belongs to the harness and changes with it; this package states the consequence an agent must act on (a write-only `/tmp`), never the mechanism.
 
 **Move the rule, never copy it.** Once its content is in the doc, the section goes — the index line already names that doc, so a leftover pointer section is the duplication this package removes. A section that also carries something the package does not own keeps only that part.
 
