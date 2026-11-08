@@ -49,3 +49,13 @@ If the concept you need isn't in the glossary yet, that's a signal: either you'r
 If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
 
 > _Contradicts ADR-0007 (event-sourced orders), but worth reopening because…_
+
+Put the conflict and the amendment you propose to the owner, and wait for that decision before writing code. A record that steers the code and is then silently diverged from is worse than no record: the next session reads the false version as direction.
+
+## Docs are the record; the agent file is the index
+
+- **`docs/` is authoritative.** `README.md` covers what a human needs to build and run; `docs/` covers what the product must do and why.
+- **The agent file is an index, not a copy.** It names where each rule lives and states only what has no other home. A rule written in both places drifts; when they disagree, the doc wins.
+- **Update the doc in the same change as the behaviour.** A change that leaves a doc describing the old state is unfinished, not deferred.
+- **Grep for what the change renames.** A term the change removes or renames is still named in the docs; update every hit, scoped to the docs the change touches.
+- **A spec is a contract, not a mirror.** Rules and observable behaviour belong in it; exact values, file paths and internal structure belong to the code. If a sentence would need editing when a dependency, file or default changes, it is not spec text.

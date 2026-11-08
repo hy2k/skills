@@ -15,6 +15,7 @@ listed here.
 ## Rules
 
 - **A throwaway never lands in `.scratch/` or `docs/`.** If it has a shelf life, it goes in `.tmp/`; if it has to survive a session, it goes in `.scratch/`.
+- **`$TMPDIR` is the scratch root.** Under a sandbox `/tmp` is often write-only, so a file written there cannot be read back — resolve `$TMPDIR` and use what it names, falling back to `<repo>/.tmp/` when it is unset.
 - **Research output is not a ticket.** Evidence with sources goes to `docs/research/`; a task goes to `.scratch/`.
 - **A shipped spec is not an in-flight spec.** `.scratch/<feature>/spec.md` steers an agent; `docs/specs/<feature>.md` describes what the product must keep doing.
 - **`.scratch/` is neither a tracker nor documentation.** When every ticket is resolved, anything product-level moves to `docs/` and the directory is deleted.

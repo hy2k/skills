@@ -8,7 +8,7 @@ Implement the work described by the user in the spec or tickets.
 
 Use `tdd` where possible, at pre-agreed seams.
 
-Run typechecking regularly, single test files regularly, and the full test suite once at the end.
+Run typechecking regularly, single test files regularly, and the full test suite once at the end. Where the repo carries `docs/agents/quality-gates.md`, its commands and its full-versus-targeted rule win over this sentence — and a gate that did not run is reported as not run.
 
 Once done, use `code-review` to review the work.
 

@@ -9,13 +9,19 @@ disable-model-invocation: true
 Scaffold the per-repo configuration the engineering skills assume:
 
 - **Artifact paths**: where each kind of file an agent writes actually belongs
+- **Asking**: which structured question tool this harness exposes, and how it marks a recommendation
 - **Issue tracker**: where issues live (GitHub by default; local markdown is also supported out of the box)
 - **Triage labels**: the strings used for the five canonical triage roles
 - **Domain docs**: where the glossary and ADRs live, and the consumer rules for reading them
+- **Quality gates**: which commands must pass, and how far they reach for a given change
+- **Long-running processes**: how to start a server this session owns, and how to leave everyone else's alone
+- **Skills layout**: where the skill tree comes from, and which copy is authoritative
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
 
 Every one of these has a **default**. Take the default without asking unless exploration found evidence the repo already decided otherwise. The point of this skill is to write the file, not to run a questionnaire.
+
+**Brownfield is the normal case.** Any repo that does not yet pin this package already carries some of these rules in prose, somewhere in its agent file, so the first run there is a merge rather than a write. See [Merging into an existing repo](#merging-into-an-existing-repo).
 
 ## Process
 
@@ -24,11 +30,15 @@ Every one of these has a **default**. Take the default without asking unless exp
 Look at the current repo to understand its starting state. Read whatever exists; don't assume:
 
 - `git remote -v` and `.git/config`: is this a GitHub repo? Which one?
-- `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either?
-- `docs/agents/`: does this skill's prior output already exist?
+- `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either? Which subsections does it carry, and what are they called?
+- **The rest of that file, not just the block.** Which top-level sections already state a rule this skill now owns — documentation, sandbox, quality gates, servers, skills, asking? The merge step routes them into docs; list them now, with their heading text, so step 4 can propose one migration.
+- `docs/agents/`: does this skill's prior output already exist? Read each file that does — an existing doc is edited, never replaced.
 - `docs/research/`, `docs/adr/`, `docs/specs/`, `docs/glossary.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`: which of the documented layouts is already in use?
 - `.scratch/`, `.tmp/`, `TMPDIR` in the environment: signs of an existing local-markdown tracker and a throwaway convention
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether the triage section runs at all.
+- `apm.yml` and `.apm/skills/`: is the skill tree APM-managed, and does the repo own any skills? `git ls-files .agents/skills | head -1` says whether the tree is committed. A populated `.agents/skills/` with no manifest means the tree is hand-authored source, not output.
+- Task runners and their scripts: `package.json` scripts, `pyproject.toml`, `mix.exs`, `mise.toml`, a `Makefile`. These name the quality gates.
+- A server command: a `dev` or `preview` script, a framework config, a `docker compose` service. Its presence decides whether the long-running-processes section runs.
 - Monorepo signals: a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. These are present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
 
 ### 2. Present findings and ask
@@ -86,12 +96,36 @@ Default posture: write the row for the harness **this session** is running, whic
 
 Write it to `docs/agents/asking.md` using [asking.md](./asking.md) as the seed.
 
+**Section F: Quality gates.**
+
+> Explainer: an agent that cannot name the checks it ran cannot say the work is done. This file makes "it works" checkable, and it is the one the verification rule points at.
+
+Default posture: read the commands out of whatever already owns them — `package.json` scripts, `pyproject.toml`, `mix.exs`, `mise.toml` — and write them in. Ask only which of them is the full sequence and which are the targeted checks.
+
+Write it to `docs/agents/quality-gates.md` using [quality-gates.md](./quality-gates.md) as the seed. Skip the section when exploration found no runnable check at all, and say so.
+
+**Section G: Long-running processes.**
+
+> Explainer: anything that binds a port outlives the session that started it. The expensive failure is not the leaked port, it is stopping the owner's server or deleting a lock file to clear it.
+
+Default posture: write the table for the server exploration found — command, foreground switch, granted port range, lock file, readiness check. When the repo has no server, skip the section and say so.
+
+Write it to `docs/agents/long-running-processes.md` using [long-running-processes.md](./long-running-processes.md) as the seed.
+
+**Section H: Skills layout.**
+
+> Explainer: an agent has to know which copy of a skill it may edit. Where the tree is generated, an edit to `.agents/skills/` is lost on the next install; where it is hand-authored, a rule that belongs in `.agents/skills/` has no other home and writing it under `.apm/` puts it where nothing reads.
+
+Default posture: `apm.yml` present means **generated**; no manifest with a populated `.agents/skills/` means **hand-authored**. Write the matching half of the doc, delete the other, and fill the "this repo is" line. Skip the section only when the repo has no skill tree at all.
+
+Write it to `docs/agents/skills-layout.md` using [skills-layout.md](./skills-layout.md) as the seed.
+
 ### 3. Confirm and edit
 
 Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
-- The contents of `docs/agents/artifact-paths.md`, `docs/agents/asking.md`, `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
+- The contents of every doc this run writes — including an existing one being brought to the template's shape, with its repo-specific facts carried into the fill-in slots
 
 Let them edit before writing.
 
@@ -105,35 +139,58 @@ Let them edit before writing.
 
 Never create `AGENTS.md` when `CLAUDE.md` already exists (or vice versa); always edit the one that's already there.
 
-If an `## Agent skills` block already exists in the chosen file, update its contents in-place rather than appending a duplicate. Don't overwrite user edits to the surrounding sections.
+#### Merging into an existing repo
 
-The block:
+**Any repo that does not yet pin this package is brownfield**, and a brownfield repo usually already carries most of these rules in prose. So the first run is a merge, not a write: produce the docs, then move what already exists into them.
+
+**Two surfaces carry the same rules, and both have to be checked.**
+
+1. The `## Agent skills` block, when the file has one.
+2. Top-level sections elsewhere in the same file. Every subject this skill owns usually appears somewhere already — under headings like `## Documentation`, `## Sandbox`, `## Quality gates`, `## Long-running processes`, `## Verification`, `## Agent skills`, `## Asking the owner`.
+
+Match by **subject**, never by heading text. Then route what you find:
+
+| An existing section is likely to hold | The doc that now owns it |
+| --- | --- |
+| Documentation, Docs, Writing specs | `domain.md` |
+| Sandbox, Temporary files, Scratch | `artifact-paths.md` |
+| Quality gates, Verification, Checks | `quality-gates.md` |
+| Long-running processes, Dev server, Servers | `long-running-processes.md` |
+| Agent skills, Skills, APM | `skills-layout.md` |
+| Asking, Interview questions, Grilling questions | `asking.md` |
+| Issue tracker, Tickets, Triage | `issue-tracker.md`, `triage-labels.md` |
+
+**Move the rule, never copy it.** Once its content is in the doc, the section goes — the index line already names that doc, so a leftover pointer section is the duplication this package removes. A section that also carries something the package does not own keeps only that part.
+
+**Repo-specific facts travel into the doc's fill-in slots**, not into the block: a port range, a lock-file path, a command, a PASS criterion. Each template has a table for those.
+
+**Show the diff before deleting prose.** A top-level section often carries something the doc does not cover — a business boundary, a consent rule, a domain fact, a repository map. Move what the doc owns, leave the rest, and let the owner see the before and after. Report which sections were removed and what stayed.
+
+**Adopt in one run.** A half-migrated repo keeps two copies of the same rule, which is the drift this package exists to remove, so a brownfield run takes the block and every top-level section it owns in the same change. Split only when the owner asks for it, and name what was left.
+
+**Running twice changes nothing.** If the block and the docs already say what this run would say, report that and write nothing.
+
+Within the `## Agent skills` block itself:
+
+- **`## Agent skills` is the integration point.** Keep the heading exactly as it is. Never create a second one, never rename it, never nest the block under another heading.
+- **The block is an index, not a summary.** One line naming `docs/agents/` and the files in it. A `### Heading` whose body is "See `docs/agents/<subject>.md`" repeats the filename the reader can already see, and costs one edit per doc whenever the set changes.
+- **Normalize an existing block to the index.** A repo carrying `### Asking` / `### Interview questions` / `### Triage labels` subsections gets them collapsed into the index line — after moving any wording worth keeping into the matching doc. Brownfield means adopting this package's shape, not preserving the old one; a repo that keeps its own layout leaves every later run guessing which shape is current.
+- **Existing docs adopt the template as well.** A `docs/agents/quality-gates.md` written by an older run is rewritten to the current template with its repo-specific facts carried into the fill-in slots. Two shapes of the same doc across repos is the same guessing problem one level down.
+- **Only an explicit instruction at invocation preserves a deviation.** If the owner asks this run to keep the repo's own structure, keep it and say so in the report. Absent that, adopt.
+- **Leave the sections this package does not own untouched.** `### Project conventions`, `### Business boundaries`, a usage-rules block, a repository map, a consent rule — those are the repo's, not ours to normalize.
+- **Write the doc before the pointer.** A pointer to a file that does not exist is worse than no pointer.
+
+The block, when the repo has none:
 
 ```markdown
 ## Agent skills
 
-### Artifact paths
+Repo conventions live in `docs/agents/`; read the one matching the subject before acting — `artifact-paths.md` (where files go), `asking.md` (question tool), `issue-tracker.md`, `triage-labels.md`, `domain.md` (glossary, ADRs), `quality-gates.md`, `long-running-processes.md`, `skills-layout.md`.
 
-[one-line summary of where research, decisions, specs, tickets, and throwaways go]. See `docs/agents/artifact-paths.md`.
-
-### Asking
-
-[one-line summary: the question tool this harness exposes and how it marks a recommendation]. See `docs/agents/asking.md`.
-
-### Issue tracker
-
-[one-line summary of where issues are tracked]. See `docs/agents/issue-tracker.md`.
-
-### Triage labels
-
-[one-line summary of the label vocabulary]. See `docs/agents/triage-labels.md`.
-
-### Domain docs
-
-[one-line summary of layout: "single-context" or "multi-context"]. See `docs/agents/domain.md`.
+Skills under `.agents/skills/` may name another harness's tools or slash commands. Treat those as intent, not a requirement: use the equivalent capability in the current harness, and where none exists, follow the skill's workflow with the tools available.
 ```
 
-Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.md`, only when `triage` is installed and Section C ran. When it isn't, both are omitted.
+Build the index line from the docs this run actually writes: omit any file whose section was skipped, so the index never names a document that does not exist. Write `triage-labels.md`, and name it in the index, only when `triage` is installed and Section C ran. Keep the harness paragraph even when everything else is trimmed — it is the one rule that applies to every skill in the tree.
 
 Then write the docs files using the seed templates in this skill folder as a starting point:
 
@@ -144,6 +201,9 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [issue-tracker-local.md](./issue-tracker-local.md): local-markdown issue tracker
 - [triage-labels.md](./triage-labels.md): label mapping (only if `triage` is installed)
 - [domain.md](./domain.md): domain doc consumer rules + layout
+- [quality-gates.md](./quality-gates.md): commands, scoping, and the verification rule
+- [long-running-processes.md](./long-running-processes.md): ownership, the auto-background trap, bounded runs
+- [skills-layout.md](./skills-layout.md): generated tree, which copy to edit, pinning
 
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 
