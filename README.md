@@ -52,11 +52,11 @@ Every other skill reads those files instead of guessing.
 
 | Step | Skill |
 | --- | --- |
-| Stress-test a plan before writing it | `grilling` |
+| Stress-test a plan before writing it | `grilling` — records the ADRs and terms it settles once you confirm |
 | Turn the conversation into a spec | `to-spec` |
 | Cut the spec into tracer-bullet tickets | `to-tickets` |
 | Work an unknown effort down a map of tickets | `wayfinder` |
-| Implement a ticket test-first | `tdd`, `implement`, `implement-spec` |
+| Implement a ticket test-first | `tdd`, `implement` — sequential on the current branch by default, worktree-parallel only when you ask for it |
 | Review the diff | `code-review` |
 | Diagnose a failure before patching it | `diagnosing-bugs` |
 | Record a decision or a term | `domain-modeling` |

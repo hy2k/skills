@@ -26,3 +26,11 @@ Each round the user answers reshapes the tree: settled decisions push the fronti
 Finding _facts_ is your job, never the user's. When a frontier question needs a fact from the environment (filesystem, tools, etc.), dispatch a sub-agent to find it; don't ask the user for anything you could look up yourself. Don't block on it: a running exploration is an unsettled prerequisite, so only the questions downstream of it wait for the sub-agent to report; ask the rest of the frontier now. The _decisions_ are the user's: put each to them and wait.
 
 The session is done when the frontier is empty: every branch of the design tree visited, nothing left silently assumed. Do not act on it until the user confirms you have reached a shared understanding.
+
+## Recording
+
+Once the user confirms, record what settled: a decision that beat live alternatives as an ADR, a newly named term in the glossary. Where those files go comes from `docs/agents/artifact-paths.md` when the repo carries one; otherwise `docs/adr/NNNN-slug.md` and the glossary at the repo root.
+
+Skip anything the repo's own rules say needs no record — a choice with one sane answer, something the code already settles, or a sentence a spec states is not an ADR. And never write a record for a question a later round may reopen: a record answering a question the session has already moved past is worse than no record.
+
+When the conversation produced a plan rather than decisions — something to build next — the output is a spec or tickets, not an ADR. Say which and stop there.
