@@ -9,7 +9,7 @@ disable-model-invocation: true
 Scaffold the per-repo configuration the engineering skills assume:
 
 - **Artifact paths**: where each kind of file an agent writes actually belongs
-- **Asking**: which structured question tool this harness exposes, and how it marks a recommendation
+- **Asking**: which question tool this harness exposes, which shape it declares (an HTML form or `questions[]`), and how it marks a recommendation
 - **Issue tracker**: where issues live (GitHub by default; local markdown is also supported out of the box)
 - **Triage labels**: the strings used for the five canonical triage roles
 - **Domain docs**: where the glossary and ADRs live, and the consumer rules for reading them
@@ -90,9 +90,9 @@ Offer **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSS
 
 **Section E: Question channel.**
 
-> Explainer: the skills that interview — `grilling` above all — need to know which structured question tool this repo's harness exposes, because every harness names the fields differently. Prose rounds cost a round trip and lose the selection; a round in the wrong shape fails outright, since these schemas are closed.
+> Explainer: the skills that interview — `grilling` above all — need to know which question tool this repo's harness exposes and which shape it declares: one HTML `<form>` or a `questions[]` array. The shapes and field names differ. Prose rounds cost a round trip and lose the selection; a round in the wrong shape fails outright, since these schemas are closed.
 
-Default posture: write the row for the harness **this session** is running, which you can read off your own tool list — `ask`, `question`, `ask_user_question`, `AskUserQuestion`, or none. Add a row for each further harness the repo is driven by, if the user names one. Do not ask which harness it is when your own tool list already answers it.
+Default posture: write the row for the shape **this session's** tool declares, which you can read from its schema — an `html` parameter is a form, a `questions[]` parameter is structured, and a session with no such tool is `none`. Name the tool and its shape. Add a row for each further harness the repo is driven by, if the user names one. Do not ask which harness it is when your own tool list already answers it.
 
 Write it to `docs/agents/asking.md` using [asking.md](./asking.md) as the seed.
 
@@ -197,7 +197,7 @@ Build the index line from the docs this run actually writes: omit any file whose
 Then write the docs files using the seed templates in this skill folder as a starting point:
 
 - [artifact-paths.md](./artifact-paths.md): the five-tier layout
-- [asking.md](./asking.md): the question channel, per harness
+- [asking.md](./asking.md): the question channel, by tool shape
 - [issue-tracker-github.md](./issue-tracker-github.md): GitHub issue tracker
 - [issue-tracker-gitlab.md](./issue-tracker-gitlab.md): GitLab issue tracker
 - [issue-tracker-local.md](./issue-tracker-local.md): local-markdown issue tracker
@@ -211,4 +211,19 @@ For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch us
 
 ### 5. Done
 
-Tell the user the setup is complete and which engineering skills will now read from these files. Mention they can edit `docs/agents/*.md` directly later; re-running this skill is only necessary if they want to switch issue trackers or restart from scratch.
+Tell the user the setup is complete and which engineering skills will now read from these files. Mention they can edit `docs/agents/*.md` directly later; re-running this skill is only necessary to switch issue trackers, restart from scratch, or refresh the docs after a package update (see [Refreshing an existing setup](#refreshing-an-existing-setup)).
+
+## Refreshing an existing setup
+
+When the package is updated and `docs/agents/` already exists, refresh instead of running the setup interview again.
+
+- Run `apm install` first so the seed templates in this skill folder match the pinned tag. If they already match, skip it.
+- Read `apm.yml` to find the pinned tag, and read `CHANGELOG.md` at that tag for what changed.
+- Read each existing `docs/agents/*.md` and the matching seed template in this skill folder.
+- Apply the template changes to the existing doc. Preserve repo-specific facts in the fill-in slots and any section this package does not own.
+- Add a doc only when the new template set includes a subject the repo lacks; ask only the question that new doc needs.
+- Remove a doc only when the package no longer ships it and no local rule needs it.
+- Update the `## Agent skills` index only if the set of docs changed.
+- Report each doc changed, each local deviation kept, and each doc left unchanged. If nothing changed, write nothing.
+
+The refresh does not need the full setup interview: take every default already recorded in the docs, and ask only about a new section or a template change that the existing doc cannot settle.

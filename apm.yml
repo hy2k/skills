@@ -1,5 +1,5 @@
 name: hy2k-skills
-version: 0.1.0
+version: 0.2.0
 description: Engineering workflow skills for AI agents — grill, spec, ticket,
   implement, review — with stated artifact paths and a per-repo conventions
   setup. Derivative of mattpocock/skills.
