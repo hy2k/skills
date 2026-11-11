@@ -21,7 +21,7 @@ See [Provenance](#provenance).
 dependencies:
   apm:
     - git: https://github.com/hy2k/skills
-      ref: v0.2.0
+      ref: v0.2.1
 ```
 
 Then:
@@ -143,7 +143,7 @@ apm install                      # self-install, writes apm.lock.yaml (gitignore
 apm compile --validate           # frontmatter and primitive check
 apm audit                        # hidden-Unicode and drift scan
 apm pack --format agent-plugin   # portable Agent Plugins v1 bundle in build/
-git tag v0.2.0 && git push --tags
+git tag v0.2.1 && git push --tags
 ```
 
 `apm compile` without `--validate` exits 1 here: this package ships no

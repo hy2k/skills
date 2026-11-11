@@ -15,7 +15,7 @@ The tool's name and the harness version do not decide the shape; its schema does
 
 An `ask` that exposes `questions[]` is structured; a `question` that exposes `html` is a form.
 
-Sources: omp's `ask` tool schema, prompt, parser, and release notes v18.18.3–v18.18.6 — read 2026-11-10; `opencode` `a9a067f`, `deepseek-harness` `fcc0ad46`, `pi` `5ea81d2`, and the Claude Code docs at `code.claude.com` — carried from the previous revision, read 2026-11-09. The version tags are provenance only: the schema, not the harness or its version, decides the shape.
+Sources: omp's `ask` tool schema, prompt, parser, and release notes v18.18.3–v18.18.8 — read 2026-11-11; `opencode` `a9a067f`, `deepseek-harness` `fcc0ad46`, `pi` `5ea81d2`, and the Claude Code docs at `code.claude.com` — carried from the previous revision, read 2026-11-09. The version tags are provenance only: the schema, not the harness or its version, decides the shape.
 
 ## The tool in use here
 
@@ -33,11 +33,12 @@ Fill the row for the tool this session exposes; read its shape from the schema. 
 
 omp's `ask` exposes this shape; the contract is the same for any tool whose schema takes `html`. The tool's own description and parser are authoritative; this section is the working contract. Send one `html` string holding exactly one `<form>` of plain semantic HTML. Never `<script>`, `<style>`, or `style=`; never add a submit button — the UI supplies Submit and Cancel. Hosts with a form surface render it whole; hosts without one prompt each named field in turn.
 
-- **Every control needs a `name`.** The answer arrives as JSON keyed by `name`. A form with no named controls is rejected.
+- **Every control needs a `name`.** The submitted values arrive as JSON keyed by `name`; notes arrive separately. A form with no named controls is rejected.
 - **One-of:** `<input type="radio">` in a group sharing one `name`. **Many-of:** `<input type="checkbox">` in a group sharing one `name`, or `<select multiple>`. **Long lists:** `<select>`.
 - **Free input:** `<input type="text|number|date|email|url">` and `<textarea>`; `placeholder`, `min`, `max`, `pattern`, and `required` are enforced. `number` returns a number; text returns text.
 - **Group each question.** Use `<fieldset>` with `<legend>`, or a `<p>` immediately before the group. Wrap every control in a `<label>`.
-- **Mark the recommendation by preselection.** Put `checked` on the radio or checkbox, `selected` on the option, or `value` on the text field. The harness reads only that preselection; option order and label text are presentation. A timeout, when the harness enforces one, submits the current values and says no answer arrived; do not read that as consent.
+- **Mark the recommendation by preselection.** Put `checked` on the radio or checkbox, `selected` on the option, or `value` on the text field. The harness reads only that preselection; option order and label text are presentation. A timeout, when the harness enforces one, submits the current values and says no answer arrived; a note draft still open at the deadline is saved with them, and counts only if its option is selected. Do not read a timeout as consent.
+- **Notes are separate, optional, and owner-initiated.** A form host may let the owner annotate a selected choice; omp's dialog returns those as `notes[]` — `{name, question, option, text}` per note — with an `Option notes:` list after the submitted JSON in the result text. A note never changes the selected value, is absent unless the owner writes it, and is included only when its option is selected. Markup cannot prefill one: to require a reason, add a named free-text field.
 - **Never add an "Other" option or a text field for it.** Radio and checkbox groups get one automatically: its text becomes the radio's value or an extra checkbox array entry. An unchecked choice group or lone checkbox is omitted from the JSON.
 - **Context belongs in the form:** `<p>`, `<ul>`, `<table>`, `<pre>`. Pictures go in `<img src="…" alt="…">` — an http(s) URL, a `data:` URI, or a path relative to the working directory — or inline `<svg>`, as their own blocks; inside a `<label>` only the `alt` text shows.
 - **Keep it short:** a few questions, 2–5 options each. Ask follow-ups in a later call.

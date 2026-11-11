@@ -6,6 +6,12 @@ All notable changes to this package are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-11
+
+### Changed
+
+- `asking.md` documents the separate option-note channel omp returns with HTML form answers (`notes[]`, plus `Option notes:` in the result text); `grilling` names the decision's rationale rather than a per-option note.
+
 ## [0.2.0] - 2026-11-10
 
 ### Added
