@@ -1,0 +1,4 @@
+# APM CLI for the release task and the commands this package documents.
+# mise.lock pins the resolved version and checksums; refresh it with `mise lock`.
+[tools]
+apm = "latest"

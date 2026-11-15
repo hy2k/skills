@@ -10,6 +10,7 @@ All notable changes to this package are documented here. The format follows
 
 ### Added
 
+- `mise.toml` requests the latest APM CLI and `mise.lock` pins the resolved version and checksums. `mise run release <version>` cuts a release end to end: changelog section, `apm.yml` and `plugin.json` bumps, README tag pins, `apm install` / `compile --validate` / `audit` / `pack`, a `chore(release)` commit, and the annotated tag. It prints the push commands and never pushes.
 - `to-tickets` writes an advisory `Recommended order` line (`<n> of <total> | <NN> → <NN> → …`) when proposed tickets share a surface, records the shared surfaces and reasons in each ticket's Comments, and reserves `Blocked by` for dependencies that would make the blocked work wrong or wasted. A single ticket or a set with no shared surface carries no order line, and `Recommended order` is never encoded as a blocking link.
 - `implement` runs a set that carries `Recommended order` sequentially, one writer per shared surface, and asks for an explicit override before parallel mode on a set that shares one.
 

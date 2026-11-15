@@ -80,14 +80,15 @@ Every other skill reads those files instead of guessing.
 
 APM updates the skill tree, not the `docs/agents/` files that `agent-conventions`
 wrote. After a release, copy this prompt into an agent that can read the web and
-run `apm`, with the new tag. It pins the tag, refreshes the docs from the new
-seed templates, and keeps repo-specific facts.
+run `apm`. It pins the tag below, refreshes the docs from the new seed templates,
+and keeps repo-specific facts. `mise run release` rewrites the pin with the
+install snippet's.
 
 ```text
-Use https://github.com/hy2k/skills at tag <tag> to update this repo.
+Use https://github.com/hy2k/skills at tag v0.3.0 to update this repo.
 
 Read that tag's README.md and CHANGELOG.md first. Then:
-- Update the hy2k/skills git dependency in apm.yml to ref <tag>; leave the rest
+- Update the hy2k/skills git dependency in apm.yml to ref v0.3.0; leave the rest
   untouched.
 - Run `apm install`.
 - Run the `agent-conventions` skill in refresh mode. Compare every
@@ -136,15 +137,22 @@ A repo overrides any of these in `docs/agents/artifact-paths.md`.
 ## Authoring
 
 Skills are primitives under `.apm/skills/<name>/SKILL.md`; `apm.yml` declares
-the package. Release shape is a single plugin:
+the package. Release shape is a single plugin. `mise.toml` requests the latest
+APM CLI and `mise.lock` pins the resolved version and checksums, so a release
+runs on a known APM:
 
 ```
-apm install                      # self-install, writes apm.lock.yaml (gitignored)
-apm compile --validate           # frontmatter and primitive check
-apm audit                        # hidden-Unicode and drift scan
-apm pack --format agent-plugin   # portable Agent Plugins v1 bundle in build/
-git tag v0.3.0 && git push --tags
+mise install                     # install the APM CLI pinned in mise.lock
+mise run release 0.4.0           # changelog, versions, README pins, checks, commit, tag
 ```
+
+`mise run release <version>` refuses a dirty tree, an empty `Unreleased`
+section, a version that does not advance on `apm.yml`, and a tag that already
+exists. It cuts `Unreleased` into a dated section, bumps `apm.yml` and
+`plugin.json`, rewrites every `v<version>` tag literal in this README, then runs
+`apm install`, `apm compile --validate`, `apm audit`, and `apm pack`, commits
+`chore(release): <version>`, and creates the annotated tag. It never pushes; it
+prints the two push commands.
 
 `apm compile` without `--validate` exits 1 here: this package ships no
 instructions, so there is no `AGENTS.md` to generate. `--validate` is the check
@@ -154,8 +162,8 @@ are gitignored — a fresh clone reproduces them from `.apm/` and `apm.yml`.
 ### apm audit under a sandbox
 
 `apm audit` replays the install into a temp directory and refuses a scratch path
-inside the project tree. If your sandbox profile sets `TMPDIR` inside the
-checkout, point it outside for the audit:
+inside the project tree. The release task points `TMPDIR` at
+`~/.cache/apm-audit` (override with `APM_AUDIT_DIR`). By hand:
 
 ```sh
 mkdir -p ~/.cache/apm-audit
@@ -169,10 +177,6 @@ That is a local workaround, not the fix. The durable options are a `TMPDIR`
 outside the checkout in the shared sandbox profile, or upstream `apm` making
 audit scratch honour `APM_TEMP_DIR`/`temp-dir` instead of falling back to the
 working directory.
-
-Consumers pin the tag. Move the `Unreleased` entries in `CHANGELOG.md` under the
-new version, bump `version:` in `apm.yml` and `plugin.json` together, then tag
-`v<version>`.
 
 ## Provenance
 

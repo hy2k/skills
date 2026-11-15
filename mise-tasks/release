@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#MISE description="Cut a release: changelog, version bumps, README pins, checks, commit, tag"
+#USAGE arg "<version>" help="Version to release, without the leading v"
+
+set -euo pipefail
+
+fail() {
+  printf 'release: %s\n' "$*" >&2
+  exit 1
+}
+
+version="${1#v}"
+[[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || fail "version must be X.Y.Z, got '$1'"
+
+cd "$(git rev-parse --show-toplevel)" || fail "not inside a git work tree"
+tag="v$version"
+
+[[ -z "$(git status --porcelain)" ]] || fail "working tree is not clean; commit or stash first"
+[[ -f CHANGELOG.md && -f README.md && -f apm.yml && -f plugin.json ]] || fail "missing a release file"
+
+current="$(sed -n 's/^version:[[:space:]]*//p' apm.yml | head -1)"
+[[ -n "$current" ]] || fail "cannot read version: from apm.yml"
+[[ "$current" != "$version" ]] || fail "apm.yml already says $version"
+
+if [[ "$(printf '%s\n%s\n' "$current" "$version" | sort -V | tail -1)" != "$version" ]]; then
+  fail "$version is not greater than the current $current"
+fi
+
+git rev-parse -q --verify "refs/tags/$tag" >/dev/null && fail "tag $tag already exists locally"
+[[ "$(git tag -l 'v*' --sort=-v:refname | head -1)" == "v$current" ]] ||
+  fail "newest local tag is not v$current"
+
+origin_newest="$(
+  git ls-remote --tags --refs origin 'refs/tags/v*' 2>/dev/null |
+    awk -F/ '{print $3}' | sort -V | tail -1
+)" || true
+[[ -n "$origin_newest" ]] || fail "cannot read tags from origin; check network and remote"
+[[ "$origin_newest" == "v$current" ]] || fail "origin's newest tag is $origin_newest, not v$current"
+
+awk '/^## \[Unreleased\]/{f=1;next} /^## \[/{f=0} f' CHANGELOG.md | grep -q '[^[:space:]]' ||
+  fail "CHANGELOG.md has no entries under [Unreleased]"
+
+today="$(date -u +%F)"
+
+# Cut the changelog: keep Unreleased empty and open a dated section above the entries.
+sed -i "s|^## \[Unreleased\]$|## [Unreleased]\n\n## [$version] - $today|" CHANGELOG.md
+
+sed -i "s|^version: .*|version: $version|" apm.yml
+sed -i "0,/\"version\": \"[^\"]*\"/s|\"version\": \"[^\"]*\"|\"version\": \"$version\"|" plugin.json
+
+grep -q "^version: $version$" apm.yml || fail "apm.yml was not bumped"
+grep -q "\"version\": \"$version\"" plugin.json || fail "plugin.json was not bumped"
+
+# One literal per place the README tells a consumer which tag to use.
+escaped="${current//./\\.}"
+sed -i "s|v$escaped|v$version|g" README.md
+grep -q "v$version" README.md || fail "README has no v$version pin"
+! grep -q "v$escaped" README.md || fail "README still pins the old tag v$current"
+
+apm install
+apm compile --validate
+audit_dir="${APM_AUDIT_DIR:-$HOME/.cache/apm-audit}"
+mkdir -p "$audit_dir"
+TMPDIR="$audit_dir" apm audit
+rm -rf build/hy2k-skills-*
+apm pack --format agent-plugin
+[[ "$(sed -n 's/.*"version": "\([^"]*\)".*/\1/p' "build/hy2k-skills-$version/plugin.json" | head -1)" == "$version" ]] ||
+  fail "packed bundle does not carry $version"
+
+git add CHANGELOG.md README.md apm.yml plugin.json
+git commit -m "chore(release): $version"
+git tag -a "$tag" -m "$tag"
+
+printf '\nReleased %s locally. Publish with:\n  git push origin %s\n  git push origin %s\n' \
+  "$tag" "$(git rev-parse --abbrev-ref HEAD)" "$tag"
