@@ -6,6 +6,15 @@ All notable changes to this package are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `to-tickets` writes an advisory `Recommended order` line (`<n> of <total> | <NN> → <NN> → …`) when proposed tickets share a surface, records the shared surfaces and reasons in each ticket's Comments, and reserves `Blocked by` for dependencies that would make the blocked work wrong or wasted. A single ticket or a set with no shared surface carries no order line, and `Recommended order` is never encoded as a blocking link.
+- `implement` runs a set that carries `Recommended order` sequentially, one writer per shared surface, and asks for an explicit override before parallel mode on a set that shares one.
+
+### Changed
+
+- `to-tickets` and `implement` bind the frontier, and with it the stop condition, to the set the user named: the feature's `issues/` directory locally or the parent issue's children on a real tracker. Other feature directories and unrelated parent issues are not frontier candidates, so a run ends when that set is empty rather than roaming the repo.
+
 ## [0.2.1] - 2026-11-11
 
 ### Changed

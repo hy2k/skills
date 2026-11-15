@@ -18,9 +18,13 @@ Commit your work to the current branch.
 
 Sequential is the default and covers every ordinary case: work one ticket at a time, on the current branch, one commit per ticket.
 
+When tickets carry `Recommended order`, run them in that sequence, one at a time, one writer per shared surface. The line is advisory, not a blocker, but a shared surface is a mutex: two sessions on it produce conflicts, stale generated output, or two writers on one service.
+
+The set the user named is the scope: the spec's tickets, or the single ticket they point at. Work the frontier of that set only, and stop when no open ticket in it remains. Do not pick up tickets from another feature directory or another parent issue, even when they are unblocked; name them to the user instead.
+
 Switch to parallel mode only when the user asks for it in words — "in parallel", a named worktree branch, an integration branch, or a PR — or when they point at a branch that is already a worktree. **"All tickets" or "the whole spec" is not a request for concurrency**: it means implement every one of them, sequentially, unless concurrency was asked for separately.
 
-Never choose parallel mode on your own. Worktrees, merge commits and a review pass on an integration branch change the shape of history, and that is the user's call to make.
+Never choose parallel mode on your own. Worktrees, merge commits and a review pass on an integration branch change the shape of history, and that is the user's call to make. If the user does ask for it on a set where tickets carry `Recommended order` or share a surface, name the shared surface and get an explicit override before starting.
 
 ## Parallel mode
 
@@ -49,7 +53,7 @@ Communication to and from subagents should be sparse. Communicate primarily thro
 
 5. Once an **implementer subagent** completes, merge its work to the integration branch with a **merger subagent**.
 
-6. If this changes the **frontier** of available tickets, kick off more **implementer subagents** to work on the new tickets. This allows for maximum concurrency.
+6. If this changes the **frontier** of available tickets, kick off more **implementer subagents** to work on the new tickets. This allows for maximum concurrency. Where the set carries `Recommended order`, start the next ticket in that sequence before any later one that shares its surface.
 
 7. Once all tickets are complete, call `code-review` on the integration branch. Fix all issues raised by the code review in a single **implementer subagent**.
 
