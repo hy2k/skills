@@ -6,6 +6,8 @@ All notable changes to this package are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-15
+
 ### Added
 
 - `to-tickets` writes an advisory `Recommended order` line (`<n> of <total> | <NN> → <NN> → …`) when proposed tickets share a surface, records the shared surfaces and reasons in each ticket's Comments, and reserves `Blocked by` for dependencies that would make the blocked work wrong or wasted. A single ticket or a set with no shared surface carries no order line, and `Recommended order` is never encoded as a blocking link.
