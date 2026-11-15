@@ -13,6 +13,7 @@ All notable changes to this package are documented here. The format follows
 
 ### Changed
 
+- `to-tickets` and the local tracker conventions write ticket metadata as a bullet list (`- **Status:** …`), never bare `Field: value` lines, which merge into one paragraph in a Markdown preview. The local ticket template gains `## What to build` and `## Acceptance criteria` headings, with metadata under the title. Existing tickets are left as they are.
 - `to-tickets` and `implement` bind the frontier, and with it the stop condition, to the set the user named: the feature's `issues/` directory locally or the parent issue's children on a real tracker. Other feature directories and unrelated parent issues are not frontier candidates, so a run ends when that set is empty rather than roaming the repo.
 
 ## [0.2.1] - 2026-11-11

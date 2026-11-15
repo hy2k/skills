@@ -92,18 +92,22 @@ Do NOT close or modify any parent issue.
 
 # <NN>: <Ticket title>
 
-**What to build:** the end-to-end behaviour this ticket makes work, from the user's perspective, not a layer-by-layer implementation list.
+- **Blocked by:** the numbers/titles of the tickets that gate this one, or "None (can start immediately)".
+- **Recommended order:** <position> of <total> | <NN> → <NN> → …
+- **Status:** ready-for-agent
 
-**Blocked by:** the numbers/titles of the tickets that gate this one, or "None (can start immediately)".
+## What to build
 
-**Recommended order:** <position> of <total> | <NN> → <NN> → …
+The end-to-end behaviour this ticket makes work, from the user's perspective, not a layer-by-layer implementation list.
 
-**Status:** ready-for-agent
+## Acceptance criteria
 
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2
 
 </local-ticket-template>
+
+One bullet per field: plain lines written back to back merge into a single paragraph in a Markdown preview, so metadata is a bullet list, never bare `Field: value` lines.
 
 <issue-template>
 
@@ -139,13 +143,15 @@ Three tickets: `01` extends the export record, `02` renders a report from that r
 ```markdown
 # 01: Extend the export record with the report name
 
-**What to build:** ...
+- **Blocked by:** None (can start immediately).
+- **Recommended order:** 1 of 3 | 01 → 02 → 03
+- **Status:** ready-for-agent
 
-**Blocked by:** None (can start immediately).
+## What to build
 
-**Recommended order:** 1 of 3 | 01 → 02 → 03
+...
 
-**Status:** ready-for-agent
+## Acceptance criteria
 
 - [ ] ...
 
@@ -157,13 +163,15 @@ Shared surface: the export module, with 02. This ticket changes the record shape
 ```markdown
 # 02: Render the report from the exported record
 
-**What to build:** ...
+- **Blocked by:** None (can start immediately).
+- **Recommended order:** 2 of 3 | 01 → 02 → 03
+- **Status:** ready-for-agent
 
-**Blocked by:** None (can start immediately).
+## What to build
 
-**Recommended order:** 2 of 3 | 01 → 02 → 03
+...
 
-**Status:** ready-for-agent
+## Acceptance criteria
 
 - [ ] ...
 
@@ -175,13 +183,15 @@ Shared surfaces: the export module with 01, and the generated report fixture and
 ```markdown
 # 03: Verify the rendered report
 
-**What to build:** ...
+- **Blocked by:** None (can start immediately).
+- **Recommended order:** 3 of 3 | 01 → 02 → 03
+- **Status:** ready-for-agent
 
-**Blocked by:** None (can start immediately).
+## What to build
 
-**Recommended order:** 3 of 3 | 01 → 02 → 03
+...
 
-**Status:** ready-for-agent
+## Acceptance criteria
 
 - [ ] ...
 
