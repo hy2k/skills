@@ -109,6 +109,8 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
 
 One bullet per field: plain lines written back to back merge into a single paragraph in a Markdown preview, so metadata is a bullet list, never bare `Field: value` lines.
 
+Ticket metadata keys and the normative frontmatter block: [`metadata-format.md`](../agent-conventions/metadata-format.md).
+
 <issue-template>
 
 ## Parent

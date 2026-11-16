@@ -7,7 +7,7 @@
 ## Considered Options
 
 - **Collapse repair**: merge the losers, delete them, renumber the block once. Rejected: correctness then depends on remembering to run a repair, and deletion erases the only statement of why the old answer looked right.
-- **Current-answer wording**: `artifact-paths.md` said "one current answer per decision", and `ADR-FORMAT.md` left reuse and renumbering unstated — read together, a tidy block may be renumbered and git holds the history. Rejected: git history is not reachable from a link, and every renumber is a repository-wide link edit.
+- **Current-answer wording**: `artifact-paths.md` said "one current answer per decision", and `adr-format.md` left reuse and renumbering unstated — read together, a tidy block may be renumbered and git holds the history. Rejected: git history is not reachable from a link, and every renumber is a repository-wide link edit.
 - **Strict append-only**: chosen.
 
 ## Consequences

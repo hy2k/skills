@@ -47,6 +47,8 @@ The in-place test is a diff test: the change touches words, not sentences. Any a
 {1-3 sentences: the question, the answer, and why.}
 ```
 
+The normative metadata block — keys, status vocabulary, and YAML style — is in [`metadata-format.md`](../agent-conventions/metadata-format.md).
+
 The body is one paragraph. `Considered Options` and `Consequences` are optional; add them only when a rejected alternative or a downstream effect is worth remembering. History lives in the status chain: do not copy the replaced answer into the new record.
 
 ## Retirement

@@ -65,10 +65,10 @@ When the user states how something works, check whether the code agrees. If you 
 
 ### Update the glossary inline
 
-When a term is resolved, update the glossary right there. Don't batch these up: capture them as they happen. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md).
+When a term is resolved, update the glossary right there. Don't batch these up: capture them as they happen. Use the format in [glossary-format.md](./glossary-format.md).
 
 The glossary should be totally devoid of implementation details. Do not treat it as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else.
 
 ### Offer ADRs sparingly
 
-Most decisions are not records. Apply the gate in [ADR-FORMAT.md](./ADR-FORMAT.md): a decision that fails it needs no file.
+Most decisions are not records. Apply the gate in [adr-format.md](./adr-format.md): a decision that fails it needs no file.
