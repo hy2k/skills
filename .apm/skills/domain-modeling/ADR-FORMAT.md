@@ -1,47 +1,90 @@
 # ADR Format
 
-ADRs live in `docs/adr/` and use sequential numbering: `0001-slug.md`, `0002-slug.md`, etc.
+ADRs live in `docs/adr/` as `NNNN-slug.md`: one file, one question, one current answer.
 
-Create the `docs/adr/` directory lazily: only when the first ADR is needed.
+Create `docs/adr/` lazily, when the first record is needed.
+
+## The gate
+
+Offer a record only when all four hold:
+
+1. **Hard to reverse**: changing your mind later costs real work.
+2. **Surprising without context**: the code alone would make a reader ask why.
+3. **A real trade-off**: there were live alternatives, and one was picked for stated reasons.
+4. **One question**: the record answers that question alone.
+
+Miss any of the four and there is no record. A tuned constant, a fixed typo, a renamed file: none of these is a decision.
+
+The slug names the subject; the first sentence answers the question. Before writing, search for an accepted record on that subject (`rg -l '<subject>' docs/adr/`). If one exists, you are revising or superseding it, never adding beside it.
+
+## What qualifies
+
+- Architectural shape and lock-in: monorepo, event sourcing, database, bus, auth provider, deployment target.
+- Boundaries between contexts, including the explicit no-s: who owns the data, what crosses by ID only.
+- Deliberate deviations from the obvious path, so the next engineer does not "fix" a deliberate thing.
+
+## Revise, supersede, or neither
+
+| Change | Action |
+| --- | --- |
+| Wording only: adds no claim, removes none, the reader's actions are unchanged | Edit in place |
+| Typo, broken link, formatting | Edit in place |
+| Status transition | Edit the status line, nothing else |
+| The answer to the question changes | New record; the old one gets the superseded line |
+| A constraint or a rejected alternative stops holding | New record |
+| Same answer, new evidence: a sweep, a review, a tuning round | No record; see Evidence |
+| One of the four gate conditions was never true | No record |
+
+The in-place test is a diff test: the change touches words, not sentences. Any added or deleted sentence that asserts something is a supersede.
 
 ## Template
 
 ```md
-# {Short title of the decision}
+# {Decision, stated as the answer}
 
-{1-3 sentences: what's the context, what did we decide, and why.}
+**Status**: {proposed | accepted | superseded by ADR-NNNN | deprecated}
+
+{1-3 sentences: the question, the answer, and why.}
 ```
 
-That's it. An ADR can be a single paragraph. The value is in recording *that* a decision was made and *why*, not in filling out sections.
+The body is one paragraph. `Considered Options` and `Consequences` are optional; add them only when a rejected alternative or a downstream effect is worth remembering. History lives in the status chain: do not copy the replaced answer into the new record.
 
-## Optional sections
+## Retirement
 
-Only include these when they add genuine value. Most ADRs won't need them.
+A retired record changes in exactly one place: the first line under its title.
 
-- **Status** frontmatter (`proposed | accepted | deprecated | superseded by ADR-NNNN`): useful when decisions are revisited
-- **Considered Options**: only when the rejected alternatives are worth remembering
-- **Consequences**: only when non-obvious downstream effects need to be called out
+```md
+**Status**: superseded by ADR-0012.
+```
 
-## Numbering
+The replacement carries the reverse link:
 
-Scan `docs/adr/` for the highest existing number and increment by one.
+```md
+**Status**: accepted. Supersedes ADR-0007.
+```
 
-## When to offer an ADR
+`deprecated` is for a decision that no longer applies, with nothing replacing it. Nothing else in a superseded record is edited, ever.
 
-All three of these must be true:
+## Numbers
 
-1. **Hard to reverse**: the cost of changing your mind later is meaningful
-2. **Surprising without context**: a future reader will look at the code and wonder "why on earth did they do it this way?"
-3. **The result of a real trade-off**: there were genuine alternatives and you picked one for specific reasons
+A number is an append-only address, not a label. Take the highest existing number plus one. Never reuse a number. Never renumber a block, and never delete a record.
 
-If a decision is easy to reverse, skip it: you'll just reverse it. If it's not surprising, nobody will wonder why. If there was no real alternative, there's nothing to record beyond "we did the obvious thing."
+The only rename allowed repairs a duplicate number: two files on `0040`. Rename the one git history added later, and rewrite every reference to the old number in the same change. `git grep -n 'ADR-0040'` must return nothing afterwards.
 
-### What qualifies
+## Evidence
 
-- **Architectural shape.** "We're using a monorepo." "The write model is event-sourced, the read model is projected into Postgres."
-- **Integration patterns between contexts.** "Ordering and Billing communicate via domain events, not synchronous HTTP."
-- **Technology choices that carry lock-in.** Database, message bus, auth provider, deployment target. Not every library: just the ones that would take a quarter to swap out.
-- **Boundary and scope decisions.** "Customer data is owned by the Customer context; other contexts reference it by ID only." The explicit no-s are as valuable as the yes-s.
-- **Deliberate deviations from the obvious path.** "We're using manual SQL instead of an ORM because X." Anything where a reasonable reader would assume the opposite. These stop the next engineer from "fixing" something that was deliberate.
-- **Constraints not visible in the code.** "We can't use AWS because of compliance requirements." "Response times must be under 200ms because of the partner API contract."
-- **Rejected alternatives when the rejection is non-obvious.** If you considered GraphQL and picked REST for subtle reasons, record it; otherwise someone will suggest GraphQL again in six months.
+Measurements never enter a record. A benchmark, a sweep, a review of candidate values goes to `docs/research/NNNN-slug.md`; the record links it if a reader needs the proof.
+
+One sweep table covers one build: every row carries the short commit SHA in a `commit` column, and the header states the date and that SHA. Never append rows measured on another build; start a new table.
+
+## Never in a record
+
+- Event logs, or a narrative of what happened.
+- Ticket, review, or pull-request history.
+- Merge notes: "combined 0041 and 0042".
+- Counts and measurement reports. A constraint value is fine ("under 200ms per the partner contract"); the sweep that produced it is not.
+- File enumerations. Name the module or the context; list no paths.
+- Reviewer names or dates.
+- Design-guide material. Link it instead.
+
+Delete test: remove each sentence and ask whether the decision still stands. If it does, the sentence does not belong.

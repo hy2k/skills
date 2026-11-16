@@ -7,7 +7,7 @@ listed here.
 | Artefact | Path | Notes |
 | --- | --- | --- |
 | Research record | `docs/research/NNNN-slug.md` | Numbered sequentially, never renumbered. Every claim carries its source inline. |
-| Decision record (ADR) | `docs/adr/NNNN-slug.md` | One current answer per decision. Only a decision with live alternatives earns one. |
+| Decision record (ADR) | `docs/adr/NNNN-slug.md` | Append-only; one current answer per question. Numbers are never reused or renumbered. Gate, template and retirement rules: `ADR-FORMAT.md` in the `domain-modeling` skill. |
 | Shipped product spec | `docs/specs/<feature>.md` | Observable behaviour only, no implementation detail. |
 | In-flight spec and tickets | `.scratch/<feature>/spec.md`, `.scratch/<feature>/issues/NN-slug.md` | Disposable; deleted once the work lands. |
 | Ephemeral artefact | `$TMPDIR`, else `<repo>/.tmp/` | Screenshots, downloads, bakes, one-off scripts. Never committed. |
