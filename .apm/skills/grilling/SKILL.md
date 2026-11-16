@@ -33,7 +33,7 @@ The session is done when the frontier is empty: every branch of the design tree 
 
 ## Recording
 
-Once the user confirms, record what settled: a decision that beat live alternatives as an ADR, a newly named term in the glossary. Where those files go comes from `docs/agents/artifact-paths.md` when the repo carries one; otherwise `docs/adr/NNNN-slug.md` and the glossary at the repo root.
+Once the user confirms, record what settled: a decision that beat live alternatives as an ADR, a newly named term in the glossary. Read the glossary at the path `docs/agents/domain.md` declares; absent that doc, `docs/glossary-map.md` then `docs/glossary.md`. No file, no glossary; create it lazily at that default when there is no declaration. Where records go comes from `docs/agents/artifact-paths.md` when the repo carries one; otherwise `docs/adr/NNNN-slug.md`.
 
 Skip anything the repo's own rules say needs no record — a choice with one sane answer, something the code already settles, or a sentence a spec states is not an ADR. And never write a record for a question a later round may reopen: a record answering a question the session has already moved past is worse than no record.
 

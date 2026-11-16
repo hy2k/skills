@@ -8,6 +8,7 @@ listed here.
 | --- | --- | --- |
 | Research record | `docs/research/NNNN-slug.md` | Numbered sequentially, never renumbered. Every claim carries its source inline. |
 | Decision record (ADR) | `docs/adr/NNNN-slug.md` | Append-only; one current answer per question. Numbers are never reused or renumbered. Gate, template and retirement rules: `ADR-FORMAT.md` in the `domain-modeling` skill. |
+| Domain glossary | `docs/glossary.md` | Paths are declared in `docs/agents/domain.md`; that file wins. Context glossaries: `src/<context>/docs/glossary.md`. |
 | Shipped product spec | `docs/specs/<feature>.md` | Observable behaviour only, no implementation detail. |
 | In-flight spec and tickets | `.scratch/<feature>/spec.md`, `.scratch/<feature>/issues/NN-slug.md` | Disposable; deleted once the work lands. |
 | Ephemeral artefact | `$TMPDIR`, else `<repo>/.tmp/` | Screenshots, downloads, bakes, one-off scripts. Never committed. |

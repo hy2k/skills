@@ -128,6 +128,7 @@ The package states this rather than inferring it:
 | --- | --- |
 | Research record | `docs/research/NNNN-slug.md` |
 | Decision record | `docs/adr/NNNN-slug.md` |
+| Domain glossary | `docs/glossary.md` — paths declared in `docs/agents/domain.md` |
 | Shipped product spec | `docs/specs/<feature>.md` |
 | In-flight spec and tickets | `.scratch/<feature>/` |
 | Throwaway artefact | `$TMPDIR`, else `<repo>/.tmp/` |

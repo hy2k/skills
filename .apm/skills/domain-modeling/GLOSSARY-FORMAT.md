@@ -1,4 +1,4 @@
-# GLOSSARY.md Format
+# Glossary Format
 
 ## Structure
 
@@ -31,18 +31,18 @@ _Avoid_: Client, buyer, account
 
 ## Single vs multi-context repos
 
-**Single context (most repos):** One `GLOSSARY.md` at the repo root.
+**Single context (most repos):** One glossary at `docs/glossary.md`.
 
-**Multiple contexts:** A `GLOSSARY-MAP.md` at the repo root lists the contexts, where they live, and how they relate to each other:
+**Multiple contexts:** `docs/glossary-map.md` lists the contexts, where their glossaries live, and how they relate to each other:
 
 ```md
 # Glossary Map
 
 ## Contexts
 
-- [Ordering](./src/ordering/GLOSSARY.md): receives and tracks customer orders
-- [Billing](./src/billing/GLOSSARY.md): generates invoices and processes payments
-- [Fulfillment](./src/fulfillment/GLOSSARY.md): manages warehouse picking and shipping
+- [Ordering](../src/ordering/docs/glossary.md): receives and tracks customer orders
+- [Billing](../src/billing/docs/glossary.md): generates invoices and processes payments
+- [Fulfillment](../src/fulfillment/docs/glossary.md): manages warehouse picking and shipping
 
 ## Relationships
 
@@ -51,10 +51,10 @@ _Avoid_: Client, buyer, account
 - **Ordering ↔ Billing**: Shared types for `CustomerId` and `Money`
 ```
 
-The skill infers which structure applies:
+The repo declares which structure applies in the Paths block of `docs/agents/domain.md`:
 
-- If `GLOSSARY-MAP.md` exists, read it to find contexts
-- If only a root `GLOSSARY.md` exists, single context
-- If neither exists, create a root `GLOSSARY.md` lazily when the first term is resolved
+- Read that declaration first.
+- Without it, read `docs/glossary-map.md` when it exists; otherwise `docs/glossary.md`.
+- If neither exists, create the glossary lazily at the declared path, or `docs/glossary.md` when there is no declaration.
 
 When multiple contexts exist, infer which one the current topic relates to. If unclear, ask.

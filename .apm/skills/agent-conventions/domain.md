@@ -2,13 +2,22 @@
 
 How the engineering skills should consume this repo's domain documentation when exploring the codebase.
 
+## Paths
+
+- **Glossary**: `docs/glossary.md`
+- **Glossary map**: `docs/glossary-map.md` (multi-context repos only; omit this line in a single-context repo)
+- **Decision records (ADRs)**: `docs/adr/`
+- **Context glossary**: `src/<context>/docs/glossary.md`
+- **Context ADRs**: `src/<context>/docs/adr/`
+
+This block is the declaration. Read it before probing a default. A declared path with no file means no glossary: the file is created lazily when the first term is resolved, not filled in ahead of need.
+
 ## Before exploring, read these
 
-- **`GLOSSARY.md`** at the repo root, or
-- **`GLOSSARY-MAP.md`** at the repo root if it exists: it points at one `GLOSSARY.md` per context. Read each one relevant to the topic.
-- **`docs/adr/`**: read ADRs that touch the area you're about to work in. In multi-context repos, also check `src/<context>/docs/adr/` for context-scoped decisions.
+- **The glossary** at the declared path. If a **glossary map** is declared, read it to find the contexts, then read each glossary relevant to the topic.
+- **The ADRs** in `docs/adr/` that touch the area you're about to work in. In multi-context repos, also check `src/<context>/docs/adr/` for context-scoped decisions.
 
-If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The `domain-modeling` skill (reached via `grilling` and `improve-codebase-architecture`) creates them lazily when terms or decisions actually get resolved.
+If no glossary exists, **proceed silently**. Don't flag its absence; don't suggest creating one upfront. The `domain-modeling` skill (reached via `grilling` and `improve-codebase-architecture`) creates it lazily when terms or decisions actually get resolved.
 
 ## File structure
 
@@ -16,31 +25,37 @@ Single-context repo (most repos):
 
 ```
 /
-├── GLOSSARY.md
-├── docs/adr/
-│   ├── 0001-event-sourced-orders.md
-│   └── 0002-postgres-for-write-model.md
+├── docs/
+│   ├── glossary.md
+│   └── adr/
+│       ├── 0001-event-sourced-orders.md
+│       └── 0002-postgres-for-write-model.md
 └── src/
 ```
 
-Multi-context repo (presence of `GLOSSARY-MAP.md` at the root):
+Multi-context repo (declared in the Paths block):
 
 ```
 /
-├── GLOSSARY-MAP.md
-├── docs/adr/                          ← system-wide decisions
+├── docs/
+│   ├── glossary-map.md
+│   └── adr/                          ← system-wide decisions
 └── src/
     ├── ordering/
-    │   ├── GLOSSARY.md
-    │   └── docs/adr/                  ← context-specific decisions
+    │   ├── docs/
+    │   │   ├── glossary.md
+    │   │   └── adr/                  ← context-specific decisions
+    │   └── ...
     └── billing/
-        ├── GLOSSARY.md
-        └── docs/adr/
+        ├── docs/
+        │   ├── glossary.md
+        │   └── adr/
+        └── ...
 ```
 
 ## Use the glossary's vocabulary
 
-When your output names a domain concept (in an issue title, a refactor proposal, a hypothesis, a test name), use the term as defined in `GLOSSARY.md`. Don't drift to synonyms the glossary explicitly avoids.
+When your output names a domain concept (in an issue title, a refactor proposal, a hypothesis, a test name), use the term as defined in the glossary. Don't drift to synonyms the glossary explicitly avoids.
 
 If the concept you need isn't in the glossary yet, that's a signal: either you're inventing language the project doesn't use (reconsider) or there's a real gap (note it for `/domain-modeling`).
 
