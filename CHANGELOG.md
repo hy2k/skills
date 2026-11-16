@@ -6,6 +6,8 @@ All notable changes to this package are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-16
+
 ### Added
 
 - `agent-conventions/metadata-format.md` defines one YAML frontmatter block for ADRs, research records, and local tickets: typed keys per artefact, partial retirement with scope bullets, the ticket status vocabulary and frontier test, ref syntax, YAML style, native-only remote trackers, and the one-commit migration.
