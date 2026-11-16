@@ -9,6 +9,7 @@ All notable changes to this package are documented here. The format follows
 ### Changed
 
 - `domain-modeling` replaces the loose ADR guidance with a four-condition gate (three criteria plus one question per record), a revise/supersede/no-record test, append-only numbering with a single duplicate-number repair, exact retirement status wording, a ban list for record content, and a rule that measured sweeps go to `docs/research/` with a commit column per table. `SKILL.md` restates none of it; `agent-conventions/artifact-paths.md` points at the format file instead of paraphrasing the rule.
+- `agent-conventions` and `domain-modeling` declare glossary paths in `docs/agents/domain.md`, default to `docs/glossary.md` and `docs/glossary-map.md`, place context glossaries at `src/<context>/docs/glossary.md`, and migrate root `GLOSSARY.md` / `GLOSSARY-MAP.md` during setup. Every skill that named a glossary path now reads the declaration first; a declared path with no file means no glossary, and the file is created lazily. Migration rewrites the README, `docs/**`, and `AGENTS.md`, and reports code references without editing them.
 
 ## [0.3.0] - 2026-11-15
 

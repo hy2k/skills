@@ -33,13 +33,12 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either? Which subsections does it carry, and what are they called?
 - **The rest of that file, not just the block.** Which top-level sections already state a rule this skill now owns — documentation, quality gates, servers, skills, asking, or a temp-file rule buried under another heading? The merge step routes them into docs; list them now, with their heading text, so step 4 can propose one migration.
 - `docs/agents/`: does this skill's prior output already exist? Read each file that does — an existing doc is edited, never replaced.
-- `docs/research/`, `docs/adr/`, `docs/specs/`, `docs/glossary.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`: which of the documented layouts is already in use?
+- `docs/research/`, `docs/adr/`, `docs/specs/`, `docs/glossary.md`, `docs/glossary-map.md`, `docs/agents/domain.md`: which of the documented layouts is already in use? Root `GLOSSARY.md` or `GLOSSARY-MAP.md` is a migration input, not the current default.
 - `.scratch/`, `.tmp/`, `TMPDIR` in the environment: signs of an existing local-markdown tracker and an ephemeral-artefact convention
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether the triage section runs at all.
 - `apm.yml` and `.apm/skills/`: is the skill tree APM-managed, and does the repo own any skills? `git ls-files .agents/skills | head -1` says whether the tree is committed. A populated `.agents/skills/` with no manifest means the tree is hand-authored source, not output.
 - Task runners and their scripts: `package.json` scripts, `pyproject.toml`, `mix.exs`, `mise.toml`, a `Makefile`. These name the quality gates.
 - A server command: a `dev` or `preview` script, a framework config, a `docker compose` service. Its presence decides whether the long-running-processes section runs.
-- Monorepo signals: a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. These are present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
 
 ### 2. Present findings and ask
 
@@ -84,9 +83,11 @@ If it is installed, ask exactly one question:
 
 The defaults are the five canonical roles, each label string equal to its name: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. On **yes**, write them as-is. Only if the user says no, usually because their tracker already uses other names (e.g. `bug:triage` for `needs-triage`), collect the overrides so `triage` applies existing labels instead of creating duplicates.
 
-**Section D: Domain docs.** Default to **single-context** (one `GLOSSARY.md` + `docs/adr/` at the repo root). This fits almost every repo; write it without asking.
+**Section D: Domain docs.** Default to **single-context**: one `docs/glossary.md` plus `docs/adr/`. Ask one question on the first setup, and only when `docs/agents/domain.md` is absent: **"Does any term mean different things in different areas?"** Yes means multi-context: collect the context names and glossary paths in one follow-up, write `docs/glossary-map.md`, and create each `src/<context>/docs/glossary.md` lazily. No means single-context. Package count and runtime count do not decide it. On refresh, read the layout from the existing `docs/agents/domain.md` and the files it names; keep that choice and migrate paths without asking again.
 
-Offer **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSSARY.md` files) only when exploration found monorepo signals. Then confirm which layout they want.
+Write the layout to `docs/agents/domain.md` using [domain.md](./domain.md) as the seed. Its Paths block is the declaration every other skill reads; fill it with the real paths, and name `docs/glossary.md` even when the file does not exist yet.
+
+A root `GLOSSARY.md` or `GLOSSARY-MAP.md` is migrated in the same run, after the owner confirms the plan: `git mv` the files to `docs/`, rewrite references in the README, `docs/**`, and `AGENTS.md`, and report code references without editing them. If a root file and its `docs/` counterpart both exist, stop and ask; do not merge. Skip `CLAUDE.md` in the reference rewrite.
 
 **Section E: Question channel.**
 
