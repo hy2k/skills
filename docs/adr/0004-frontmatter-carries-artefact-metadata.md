@@ -21,4 +21,4 @@ Frontmatter at the top of each ADR, research record, and local ticket, with keys
 - `ADR-FORMAT.md` and `GLOSSARY-FORMAT.md` become `adr-format.md` and `glossary-format.md`; lowercase is the preference, and uppercase stays a preference for widely recognized filenames such as `README.md`, `AGENTS.md`, `SKILL.md`, and `CHANGELOG.md`.
 - Each repo converts its ADRs, research records, and tickets in one commit on the next `agent-conventions` refresh. Conversion moves values and changes no claim, so retired records convert too.
 - No skill parses frontmatter today; the schema stays YAML-parseable so a check can be added later without a second migration.
-- This record is the first in the new block; ADR-0001 to ADR-0003 convert with the migration.
+- This record is the first in the new block; ADR-0001 to ADR-0003 were converted in the same change.

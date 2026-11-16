@@ -41,7 +41,7 @@ Give each ticket its **blocking edges**: the other tickets that must complete be
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change (rename a column, retype a shared symbol) whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket; green is promised only there.
 
-**Ordering is not blocking.** A shared file, exporter, generated artifact, running service, or verification command does not gate a ticket; it orders sessions. Reserve `Blocked by` for a dependency that would make the blocked work wrong or wasted if done first. If starting a ticket first would only force a rebase, a regeneration, or waiting for another session, that is an ordering concern, not a gate.
+**Ordering is not blocking.** A shared file, exporter, generated artifact, running service, or verification command does not gate a ticket; it orders sessions. Reserve the blocking edge (`blocked_by` locally, `## Blocked by` on a real tracker) for a dependency that would make the blocked work wrong or wasted if done first. If starting a ticket first would only force a rebase, a regeneration, or waiting for another session, that is an ordering concern, not a gate.
 
 ### 4. Map shared surfaces
 
@@ -79,22 +79,23 @@ Iterate until the user approves the breakdown.
 
 Publish the approved tickets. **How** depends on the tracker the `agent-conventions` skill configured; the tickets are the same either way, only the shape of the blocking edges changes:
 
-- **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first), then in recommended order within that constraint. Each file's "Blocked by" lists the numbers/titles it depends on. When the set has a recommended order, every ticket carries its position and the whole chain using file numbers: `**Recommended order:** 2 of 4 | 01 → 02 → 03 → 04`. Use the per-ticket file template below: one ticket per file, never a single combined file.
+- **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first), then in recommended order within that constraint. Each file opens with the frontmatter block from `metadata-format.md`: `blocked_by` lists the refs that gate it, and `recommended_order` carries the whole shared-surface sequence as refs, this ticket included. Use the per-ticket file template below: one ticket per file, never a single combined file.
 - **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first), then in recommended order, so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship for gates where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Never encode the recommended order as a blocking link. After all issues exist, edit each body's `## Recommended order` section in a second pass, with the real issue numbers, which need not ascend in run order: `2 of 4 | #10 → #12 → #11 → #13`. Apply the `ready-for-agent` triage label unless instructed otherwise; the tickets are agent-grabbable by construction.
 
-When the set changes after publication — a ticket is added, removed, or reordered — rewrite `Recommended order` on every ticket in the set in one pass. A later addition can leave the chain running out of numeric order; the field is authoritative.
+When the set changes after publication — a ticket is added, removed, or reordered — rewrite the order in every ticket in the set in one pass: `recommended_order` in a local ticket's block, or the `## Recommended order` section on a real tracker. A later addition can leave the chain running out of numeric order; the field is authoritative.
 
-Work the **frontier** of the named set only: open tickets in that feature's `issues/` directory locally, or the parent issue's open children on a real tracker, whose blockers are all done. Stop when that set has no open ticket left. Other feature directories and unrelated parent issues are not in scope, and their tickets are not frontier candidates. When open tickets in the set carry `Recommended order`, follow that sequence within the feature, in separate sessions, one writer per shared surface; otherwise start with the lowest number. The field is advisory and never blocks, and a ticket may still close as subsumed, with a close comment naming the ticket that absorbed it. Run sessions in parallel only when no ticket carries the field and no surface is shared.
+Work the **frontier** of the named set only: open tickets in that feature's `issues/` directory locally, or the parent issue's open children on a real tracker, whose blockers are all done. A local ticket is open unless `status` is `deferred`, `resolved`, `subsumed`, or `wontfix`. Stop when that set has no open ticket left. Other feature directories and unrelated parent issues are not in scope, and their tickets are not frontier candidates. When open tickets in the set carry `recommended_order`, follow that sequence within the feature, in separate sessions, one writer per shared surface; otherwise start with the lowest number. The field is advisory and never blocks, and a ticket may still close as subsumed: `status: subsumed` with `subsumed_by` naming the ticket that absorbed it. Run sessions in parallel only when no ticket carries the field and no surface is shared.
 
 Do NOT close or modify any parent issue.
 
 <local-ticket-template>
 
-# <NN>: <Ticket title>
+---
+type: <task | bug | grilling | research | prototype>
+status: ready-for-agent
+---
 
-- **Blocked by:** the numbers/titles of the tickets that gate this one, or "None (can start immediately)".
-- **Recommended order:** <position> of <total> | <NN> → <NN> → …
-- **Status:** ready-for-agent
+# <NN>: <Ticket title>
 
 ## What to build
 
@@ -107,9 +108,7 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
 
 </local-ticket-template>
 
-One bullet per field: plain lines written back to back merge into a single paragraph in a Markdown preview, so metadata is a bullet list, never bare `Field: value` lines.
-
-Ticket metadata keys and the normative frontmatter block: [`metadata-format.md`](../agent-conventions/metadata-format.md).
+Add `blocked_by` when another ticket gates this one and `recommended_order` when the set shares a surface; omit both otherwise. Keys and YAML style: [`metadata-format.md`](../agent-conventions/metadata-format.md).
 
 <issue-template>
 
@@ -140,14 +139,16 @@ Omit `Recommended order` for a single ticket or a set with no shared surface.
 
 ## Worked example: one exporter, one generated place
 
-Three tickets: `01` extends the export record, `02` renders a report from that record, `03` verifies the rendered report. They share the export module (`01`, `02`), the generated report fixture (`02`, `03`), and the verification command (`02`, `03`). None gates another, so there are no `Blocked by` edges.
+Three tickets: `01` extends the export record, `02` renders a report from that record, `03` verifies the rendered report. They share the export module (`01`, `02`), the generated report fixture (`02`, `03`), and the verification command (`02`, `03`). None gates another, so no ticket carries `blocked_by`.
 
 ```markdown
-# 01: Extend the export record with the report name
+---
+type: task
+status: ready-for-agent
+recommended_order: [01, 02, 03]
+---
 
-- **Blocked by:** None (can start immediately).
-- **Recommended order:** 1 of 3 | 01 → 02 → 03
-- **Status:** ready-for-agent
+# 01: Extend the export record with the report name
 
 ## What to build
 
@@ -163,11 +164,13 @@ Shared surface: the export module, with 02. This ticket changes the record shape
 ```
 
 ```markdown
-# 02: Render the report from the exported record
+---
+type: task
+status: ready-for-agent
+recommended_order: [01, 02, 03]
+---
 
-- **Blocked by:** None (can start immediately).
-- **Recommended order:** 2 of 3 | 01 → 02 → 03
-- **Status:** ready-for-agent
+# 02: Render the report from the exported record
 
 ## What to build
 
@@ -183,11 +186,13 @@ Shared surfaces: the export module with 01, and the generated report fixture and
 ```
 
 ```markdown
-# 03: Verify the rendered report
+---
+type: task
+status: ready-for-agent
+recommended_order: [01, 02, 03]
+---
 
-- **Blocked by:** None (can start immediately).
-- **Recommended order:** 3 of 3 | 01 → 02 → 03
-- **Status:** ready-for-agent
+# 03: Verify the rendered report
 
 ## What to build
 

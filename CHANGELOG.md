@@ -14,6 +14,7 @@ All notable changes to this package are documented here. The format follows
 ### Changed
 
 - `ADR-FORMAT.md` and `GLOSSARY-FORMAT.md` are `adr-format.md` and `glossary-format.md`; lowercase is the preference, and uppercase stays a preference for widely recognized filenames such as `README.md`, `AGENTS.md`, `SKILL.md`, `CHANGELOG.md`, and `ISSUE-TEMPLATE.md`. Every reference follows.
+- Artefact templates carry the frontmatter block. `adr-format.md` retires a record through `status` and `superseded_by`, adds `partially-superseded` with one scope bullet per edge, and allows metadata conversion on retired records. The local ticket template and tracker seed use `type`, `status`, `blocked_by`, `recommended_order`, and `subsumed_by`; the frontier skips `deferred`, `resolved`, `subsumed`, and `wontfix`. ADR-0001 to ADR-0003 convert, and the `agent-conventions` refresh converts every artefact in one commit per repo.
 
 ## [0.4.0] - 2026-11-16
 

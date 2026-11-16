@@ -20,4 +20,4 @@ Ticket metadata moves into the frontmatter block: `type` as free text, `status` 
 - `subsumed_by` mirrors the ADR's `superseded_by` and may name another feature directory, such as `place-structures/01`.
 - Deferral details — owner, date, and the condition — live in the body; the status is the only gate.
 - A remote tracker uses labels and close states; `resolved` and `subsumed` become close reasons there.
-- The local ticket template and the local tracker seed change in the wiring commit.
+- The local ticket template and the local tracker seed carry the block as of the same change.

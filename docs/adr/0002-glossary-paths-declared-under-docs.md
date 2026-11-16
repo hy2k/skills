@@ -1,6 +1,9 @@
-# Glossary paths are declared in `docs/agents/domain.md`, with defaults under `docs/`
+---
+status: accepted
+date: 2026-11-16
+---
 
-**Status**: accepted.
+# Glossary paths are declared in `docs/agents/domain.md`, with defaults under `docs/`
 
 Where a repo keeps its glossary, and how a skill finds it, is declared once in the Paths block of `docs/agents/domain.md`: `docs/glossary.md` for a single glossary, `docs/glossary-map.md` for a multi-context map, `src/<context>/docs/glossary.md` for a context glossary, and the matching `docs/adr/` paths for decisions. A declared path wins; a declared path with no file means no glossary, because creation is lazy. Without the declaration, a skill reads `docs/glossary-map.md`, then `docs/glossary.md`, then proceeds silently. Root `GLOSSARY.md` and `GLOSSARY-MAP.md` are migration inputs only, moved by setup and never probed at runtime.
 

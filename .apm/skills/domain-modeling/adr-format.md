@@ -29,8 +29,9 @@ The slug names the subject; the first sentence answers the question. Before writ
 | --- | --- |
 | Wording only: adds no claim, removes none, the reader's actions are unchanged | Edit in place |
 | Typo, broken link, formatting | Edit in place |
-| Status transition | Edit the status line, nothing else |
-| The answer to the question changes | New record; the old one gets the superseded line |
+| Status transition | Edit `status`; set `date` when the record becomes accepted |
+| The answer to the question changes | New record; the old one gets `status: superseded` and `superseded_by` |
+| Part of the answer changes | New record; the old one gets `status: partially-superseded`, `superseded_by`, and one scope bullet per edge |
 | A constraint or a rejected alternative stops holding | New record |
 | Same answer, new evidence: a sweep, a review, a tuning round | No record; see Evidence |
 | One of the four gate conditions was never true | No record |
@@ -40,9 +41,12 @@ The in-place test is a diff test: the change touches words, not sentences. Any a
 ## Template
 
 ```md
-# {Decision, stated as the answer}
+---
+status: {proposed | accepted | partially-superseded | superseded | deprecated}
+date: {YYYY-MM-DD, the date the record became accepted}
+---
 
-**Status**: {proposed | accepted | superseded by ADR-NNNN | deprecated}
+# {Decision, stated as the answer}
 
 {1-3 sentences: the question, the answer, and why.}
 ```
@@ -53,19 +57,32 @@ The body is one paragraph. `Considered Options` and `Consequences` are optional;
 
 ## Retirement
 
-A retired record changes in exactly one place: the first line under its title.
+A retired record changes in one place: its frontmatter block.
 
-```md
-**Status**: superseded by ADR-0012.
+```yaml
+status: superseded
+superseded_by: [0012]
 ```
 
 The replacement carries the reverse link:
 
-```md
-**Status**: accepted. Supersedes ADR-0007.
+```yaml
+supersedes: [0007]
 ```
 
-`deprecated` is for a decision that no longer applies, with nothing replacing it. Nothing else in a superseded record is edited, ever.
+A partial retirement lists every replacement and puts one scope bullet under the H1, naming the clause each one took:
+
+```yaml
+status: partially-superseded
+superseded_by: [0019, 0020]
+```
+
+```markdown
+- 0019 — the goal.
+- 0020 — the web-first venue line.
+```
+
+`deprecated` is for a decision that no longer applies, with nothing replacing it. A `superseded` or `deprecated` record accepts metadata and typo fixes only; a `partially-superseded` record stays editable in the parts no bullet names. Moving metadata into the block is a formatting edit, so a retired record may receive it.
 
 ## Numbers
 
@@ -86,7 +103,7 @@ One sweep table covers one build: every row carries the short commit SHA in a `c
 - Merge notes: "combined 0041 and 0042".
 - Counts and measurement reports. A constraint value is fine ("under 200ms per the partner contract"); the sweep that produced it is not.
 - File enumerations. Name the module or the context; list no paths.
-- Reviewer names or dates.
+- Reviewer names. The acceptance date lives in the block; body prose carries no date.
 - Design-guide material. Link it instead.
 
 Delete test: remove each sentence and ask whether the decision still stands. If it does, the sentence does not belong.

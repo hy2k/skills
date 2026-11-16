@@ -222,6 +222,7 @@ When the package is updated and `docs/agents/` already exists, refresh instead o
 - Read `apm.yml` to find the pinned tag, and read `CHANGELOG.md` at that tag for what changed.
 - Read each existing `docs/agents/*.md` and the matching seed template in this skill folder.
 - Apply the template changes to the existing doc. Preserve repo-specific facts in the fill-in slots and any section this package does not own.
+- Convert artefact metadata to the format in `metadata-format.md`: every ADR, research record, and local ticket gets its frontmatter block. Add the block, delete the old body lines and bullets, and move a partial-supersession scope sentence to the bullet list under the H1. Retired records convert too, because moving values is a formatting edit that changes no claim. Do it in one commit per repo.
 - Add a doc only when the new template set includes a subject the repo lacks; ask only the question that new doc needs.
 - Remove a doc only when the package no longer ships it and no local rule needs it.
 - Update the `## Agent skills` index only if the set of docs changed.

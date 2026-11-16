@@ -1,6 +1,9 @@
-# ADR numbers are append-only; a record holds one question
+---
+status: accepted
+date: 2026-11-16
+---
 
-**Status**: accepted.
+# ADR numbers are append-only; a record holds one question
 
 `docs/adr/` holds one current answer per question, and an accepted record is never reopened: a changed answer is a new record that supersedes the old one, a number is never reused and a block is never renumbered. Recording the same question twice is the defect this rule removes, and the retirements stay readable against the code of their day. The only rename allowed repairs a duplicate number, and it rewrites every reference in the same change.
 
