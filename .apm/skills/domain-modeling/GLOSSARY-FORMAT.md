@@ -28,6 +28,7 @@ _Avoid_: Client, buyer, account
 - **Keep definitions tight.** One or two sentences max. Define what it IS, not what it does.
 - **Only include terms specific to this project's context.** General programming concepts (timeouts, error types, utility patterns) don't belong even if the project uses them extensively. Before adding a term, ask: is this a concept unique to this context, or a general programming concept? Only the former belongs.
 - **Group terms under subheadings** when natural clusters emerge. If all terms belong to a single cohesive area, a flat list is fine.
+- **Order terms alphabetically within each section by default.** Sections are optional and owner-chosen: group by concept when a flat list stops scanning, and keep alphabetical order inside each group. The owner may choose another order; this format records the default and does not enforce it.
 
 ## Single vs multi-context repos
 
@@ -56,5 +57,7 @@ The repo declares which structure applies in the Paths block of `docs/agents/dom
 - Read that declaration first.
 - Without it, read `docs/glossary-map.md` when it exists; otherwise `docs/glossary.md`.
 - If neither exists, create the glossary lazily at the declared path, or `docs/glossary.md` when there is no declaration.
+
+Each glossary follows the ordering rule above. The map is an index, not a glossary; the ordering rule does not apply to it.
 
 When multiple contexts exist, infer which one the current topic relates to. If unclear, ask.
