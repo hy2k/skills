@@ -21,7 +21,7 @@ See [Provenance](#provenance).
 dependencies:
   apm:
     - git: https://github.com/hy2k/skills
-      ref: v0.3.0
+      ref: v0.4.0
 ```
 
 Then:
@@ -85,10 +85,10 @@ and keeps repo-specific facts. `mise run release` rewrites the pin with the
 install snippet's.
 
 ```text
-Use https://github.com/hy2k/skills at tag v0.3.0 to update this repo.
+Use https://github.com/hy2k/skills at tag v0.4.0 to update this repo.
 
 Read that tag's README.md and CHANGELOG.md first. Then:
-- Update the hy2k/skills git dependency in apm.yml to ref v0.3.0; leave the rest
+- Update the hy2k/skills git dependency in apm.yml to ref v0.4.0; leave the rest
   untouched.
 - Run `apm install`.
 - Run the `agent-conventions` skill in refresh mode. Compare every

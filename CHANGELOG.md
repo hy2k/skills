@@ -6,6 +6,8 @@ All notable changes to this package are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-16
+
 ### Changed
 
 - `domain-modeling` replaces the loose ADR guidance with a four-condition gate (three criteria plus one question per record), a revise/supersede/no-record test, append-only numbering with a single duplicate-number repair, exact retirement status wording, a ban list for record content, and a rule that measured sweeps go to `docs/research/` with a commit column per table. `SKILL.md` restates none of it; `agent-conventions/artifact-paths.md` points at the format file instead of paraphrasing the rule.
